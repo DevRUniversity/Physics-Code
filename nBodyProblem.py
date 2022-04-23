@@ -1,8 +1,15 @@
 from matplotlib import pyplot as plt
 import math
+import time
+seconds_of_computation_time = 30
 Gravitational_constant = 0.00000000006674
 bounds_of_calculation_left = -10000
 bounds_of_calculation_right = 10000
+ListOfGravitationalObjects = []
+newX = []
+newY = []
+oldX = []
+oldY = []
 
 class Gravitational_Object:
     x_cord = 0 #meters
@@ -27,14 +34,15 @@ class Gravitational_Object:
         acceleration = (Gravitational_constant*mass_two)/magnitude
         x_unit_component_of_velocity_times_acceleration = float(abs(distance_x - self.x_cord) )/ magnitude * acceleration
         y_unit_component_of_velocity_times_acceleration = float(abs(distance_y - self.y_cord) )/ magnitude * acceleration
-        self.x_velocity = self.x_velocity + 10000000
-        self.y_velocity = self.y_velocity + 10000000
+        self.x_velocity = self.x_velocity + x_unit_component_of_velocity_times_acceleration
+        self.y_velocity = self.y_velocity + y_unit_component_of_velocity_times_acceleration
 
-ListOfGravitationalObjects = []
-newX = []
-newY = []
-oldX = []
-oldY = []
+    def update_positon(self):
+        self.x_cord = self.x_cord + self.x_velocity
+        self.y_cord = self.y_cord + self.y_velocity
+
+def current_milli_time():
+    return round(time.time() * 1000)
 
 def animate(x_0, y_0, x_1, y_1):
     newX.append(x_1)
@@ -48,26 +56,28 @@ def animate(x_0, y_0, x_1, y_1):
 
     # Ploting graph
     plt.scatter(newX, newY, color='blue')
-    plt.scatter(oldX, oldY, color='white')
-    plt.pause(0.001)
+    #plt.scatter(oldX, oldY, color='white')
+    plt.pause(0.0001)
 
 GravObj1 = Gravitational_Object(0,0,10,10,10000)
 GravObj2 = Gravitational_Object(100,-200,10,10,1000)
 ListOfGravitationalObjects.append(GravObj1)
 ListOfGravitationalObjects.append(GravObj2)
 
+elapsed_milliseconds = 0
+initial_milliseconds = current_milli_time()
 counter = 0
-while(counter < 10):
+while(elapsed_milliseconds / 1000 < seconds_of_computation_time):
     PreviousGravObjs = ListOfGravitationalObjects.copy()
     for objN1 in ListOfGravitationalObjects:
         for objN2 in ListOfGravitationalObjects:
             if(objN1 != objN2):
                 objN1.accelerate_this_by(distance_x = objN2.x_cord,distance_y = objN2.y_cord,mass_two = objN2.mass)
-                print("acceleration!")
     for i in range(0,len(ListOfGravitationalObjects)):
+        ListOfGravitationalObjects[i].update_positon() #called here to avoid strange issues with the order in which calculations are made
         animate(PreviousGravObjs[i].x_cord,PreviousGravObjs[i].y_cord,
                 ListOfGravitationalObjects[i].x_cord,ListOfGravitationalObjects[i].y_cord)
-
-    counter = counter + 1
-
+        
+    elapsed_milliseconds = current_milli_time() - initial_milliseconds
+    print(str(elapsed_milliseconds / 1000) + "of Computer Time Used")
 plt.show()
