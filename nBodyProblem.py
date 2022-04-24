@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 import math
 import time
-seconds_of_computation_time = 10
+seconds_of_computation_time = 90
 Gravitational_constant = 0.00000000006674
 bounds_of_calculation_left = -50000
 bounds_of_calculation_right = 50000
@@ -10,6 +10,7 @@ newX = []
 newY = []
 oldX = []
 oldY = []
+ListOfCoords2D = []
 
 class Gravitational_Object:
     x_cord = 0 #meters
@@ -42,43 +43,67 @@ class Gravitational_Object:
 def current_milli_time():
     return round(time.time() * 1000)
 
-def animate(x_0, y_0, x_1, y_1, obj_color):
-    newX.append(x_1)
-    newY.append(y_1)
-    oldX.append(x_0)
-    oldY.append(y_0)
+def setup(ListOfCoords2D, grav_list):
+    newListOfCords = ListOfCoords2D
+    for i in range(0, len(grav_list)):
+        tempListX = []
+        tempListY = []
+        tempListX.append(grav_list[i].x_cord)
+        tempListY.append(grav_list[i].y_cord)
 
+        newListOfCords.append(tempListX)
+        newListOfCords.append(tempListY)
+    return newListOfCords
+
+def animate_and_update(grav_list,ListOfCoords2D):
     # Mention x and y limits to define their range
     plt.xlim(bounds_of_calculation_left, bounds_of_calculation_right)
     plt.ylim(bounds_of_calculation_left, bounds_of_calculation_right)
+    for i in range(0, len(grav_list)):
+        grav_list[i].update_positon()  # called here to avoid strange issues with the order in which calculations are made
+        ListOfCoords2D[(i*2)].append(grav_list[i].x_cord) #every grav obj has two entries in ListOfCords2D, when i is odd, we get the x cord
+        ListOfCoords2D[(i*2)+1].append(grav_list[i].y_cord) #when its even we get the y cord. We multiply i by 2 as shown to do this.
 
-    # Ploting graph
-    plt.scatter(newX, newY, color=obj_color)
-    #plt.scatter(oldX, oldY, color='white')
+        #building out the 'old' points
+        xCords = []
+        yCords = []
+        for j in range(0,len(ListOfCoords2D[(i*2)])-5):
+            if(j>=0):
+                xCords.append(ListOfCoords2D[(i*2)][j])
+                yCords.append(ListOfCoords2D[(i*2)+1][j])
+        # xCord.append(grav_list[i].x_cord)
+        # yCord.append(grav_list[i].y_cord)
+        # Ploting graph
+        plt.plot(ListOfCoords2D[(i*2)], ListOfCoords2D[(i*2)+1], color=grav_list[i].color,markersize=40)
+        plt.plot(xCords, yCords, color="white",markersize = 39)
     plt.pause(0.0001)
 
-GravObj1 = Gravitational_Object(0,0,0,0,29890000000000000000,"blue")
-GravObj2 = Gravitational_Object(-1000,2000,100,-50,29890000000000000000,"red")
-GravObj3 = Gravitational_Object(1000,-2000,-1000,0,100,"green")
+#Create and add gravitational objects here
+GravObj1 = Gravitational_Object(1,1,1,-1,29890000000000000000,"gold")
+GravObj2 = Gravitational_Object(-1000,20000,-300,-50,298900000,"blue")
+GravObj3 = Gravitational_Object(1000,-5000,-500,-70,10000,"green")
+GravObj4 = Gravitational_Object(2000,-10000,-200,-50,100,"red")
+GravObj5 = Gravitational_Object(-50000,-10000,500,-50,100000,"cyan")
 ListOfGravitationalObjects.append(GravObj1)
 ListOfGravitationalObjects.append(GravObj2)
 ListOfGravitationalObjects.append(GravObj3)
+ListOfGravitationalObjects.append(GravObj4)
+ListOfGravitationalObjects.append(GravObj5)
 
+
+ListOfCoords2D = setup(ListOfCoords2D, ListOfGravitationalObjects)
 elapsed_milliseconds = 0
 initial_milliseconds = current_milli_time()
 counter = 0
 while(elapsed_milliseconds / 1000 < seconds_of_computation_time):
-    if(int(elapsed_milliseconds / 1000) % 10):
+    if(int(elapsed_milliseconds / 1000) % 10 == 0):
         print(str(elapsed_milliseconds/ 10 / seconds_of_computation_time) + "% Done with Simulation" )
     PreviousGravObjs = ListOfGravitationalObjects.copy()
     for objN1 in ListOfGravitationalObjects:
         for objN2 in ListOfGravitationalObjects:
             if(objN1 != objN2):
                 objN1.accelerate_this_by(distance_x = objN2.x_cord,distance_y = objN2.y_cord,mass_two = objN2.mass)
-    for i in range(0,len(ListOfGravitationalObjects)):
-        ListOfGravitationalObjects[i].update_positon() #called here to avoid strange issues with the order in which calculations are made
-        animate(PreviousGravObjs[i].x_cord,PreviousGravObjs[i].y_cord,
-                ListOfGravitationalObjects[i].x_cord,ListOfGravitationalObjects[i].y_cord,ListOfGravitationalObjects[i].color)
+    animate_and_update(ListOfGravitationalObjects,ListOfCoords2D)
 
     elapsed_milliseconds = current_milli_time() - initial_milliseconds
     #print(str(elapsed_milliseconds / 1000) + "of Computer Time Used")
