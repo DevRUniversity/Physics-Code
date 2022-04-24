@@ -1,10 +1,11 @@
 from matplotlib import pyplot as plt
 import math
 import time
-seconds_of_computation_time = 90
+seconds_of_computation_time = 600 #Ten Minutes
 Gravitational_constant = 0.00000000006674
-bounds_of_calculation_left = -50000
-bounds_of_calculation_right = 50000
+bounds_of_calculation_left = -9000000
+bounds_of_calculation_right = 9000000
+speed_of_light = 299792458
 ListOfGravitationalObjects = []
 newX = []
 newY = []
@@ -18,6 +19,7 @@ class Gravitational_Object:
     x_velocity = 0
     y_velocity = 0
     mass = 1 #kg
+    schwartzchild_radius = 0
     color = "black"
 
     def __init__(self, x, y,v_x,v_y,inMass, inColor):
@@ -27,6 +29,9 @@ class Gravitational_Object:
         self.y_velocity = v_y
         self.mass = inMass
         self.color = inColor
+        self.schwartzchild_radius = 2*Gravitational_constant*self.mass/(speed_of_light**2)
+        if(self.schwartzchild_radius < 2): #2 Meters is arbitrary, but for what we are looking at most objects are probably wider than 2 meters. The idea is that if they are sufficently close they combine.
+            self.schwartzchild_radius = 2
 
     def accelerate_this_by(self,distance_x,distance_y,mass_two):
         magnitude = ((abs(distance_x - self.x_cord) ** 2) + (abs(distance_y - self.y_cord) ** 2)) ** 0.5
@@ -39,6 +44,14 @@ class Gravitational_Object:
     def update_positon(self):
         self.x_cord = self.x_cord + self.x_velocity
         self.y_cord = self.y_cord + self.y_velocity
+
+    def distance_from(self, distance_x, distance_y):
+        magnitude = ((abs(distance_x - self.x_cord) ** 2) + (abs(distance_y - self.y_cord) ** 2)) ** 0.5
+        return magnitude
+
+    def add_mass(self, newMass):
+        self.mass = self.mass + newMass
+
 
 def current_milli_time():
     return round(time.time() * 1000)
@@ -55,8 +68,15 @@ def setup(ListOfCoords2D, grav_list):
         newListOfCords.append(tempListY)
     return newListOfCords
 
+def calculate_marker_size(mass):
+    markersize = (int(mass/10000000000000)) + 1
+    if(markersize > 15):
+        markersize = 15
+    return markersize
+
 def animate_and_update(grav_list,ListOfCoords2D):
     # Mention x and y limits to define their range
+    plt.clf()
     plt.xlim(bounds_of_calculation_left, bounds_of_calculation_right)
     plt.ylim(bounds_of_calculation_left, bounds_of_calculation_right)
     for i in range(0, len(grav_list)):
@@ -67,44 +87,74 @@ def animate_and_update(grav_list,ListOfCoords2D):
         #building out the 'old' points
         xCords = []
         yCords = []
-        for j in range(0,len(ListOfCoords2D[(i*2)])-5):
+        for j in range(len(ListOfCoords2D[(i*2)])-15,len(ListOfCoords2D[(i*2)])-1):
             if(j>=0):
                 xCords.append(ListOfCoords2D[(i*2)][j])
                 yCords.append(ListOfCoords2D[(i*2)+1][j])
         # xCord.append(grav_list[i].x_cord)
         # yCord.append(grav_list[i].y_cord)
         # Ploting graph
-        plt.plot(ListOfCoords2D[(i*2)], ListOfCoords2D[(i*2)+1], color=grav_list[i].color,markersize=40)
-        plt.plot(xCords, yCords, color="white",markersize = 39)
-    plt.pause(0.0001)
+
+        markersize = calculate_marker_size(grav_list[i].mass)
+        plt.plot(xCords, yCords, color=grav_list[i].color,marker=".", markersize=markersize)
+        #plt.plot(xCords, yCords, color="white",markersize = 50)
+    plt.pause(0.01)
 
 #Create and add gravitational objects here
-GravObj1 = Gravitational_Object(1,1,1,-1,29890000000000000000,"gold")
-GravObj2 = Gravitational_Object(-1000,20000,-300,-50,298900000,"blue")
-GravObj3 = Gravitational_Object(1000,-5000,-500,-70,10000,"green")
-GravObj4 = Gravitational_Object(2000,-10000,-200,-50,100,"red")
-GravObj5 = Gravitational_Object(-50000,-10000,500,-50,100000,"cyan")
+GravObj1 = Gravitational_Object(1,1,1,-1,2989000000000000000000000,"gold") #Sun in this system
+GravObj2 = Gravitational_Object(0,1000000,-3500,3000,2989000000,"magenta") #Asteroid size
+GravObj3 = Gravitational_Object(0,1500000,-2000,3000,2989000000,"magenta") #Asteroid size
+GravObj4 = Gravitational_Object(1000000,0,5400,6000,2989000000,"magenta") #Asteroid size
+GravObj5 = Gravitational_Object(1500000,0,3000,9000,2989000000,"magenta") #Asteroid size
+GravObj6 = Gravitational_Object(1230000,0,7730,-3705,2989000000,"magenta") #Asteroid size
+GravObj7 = Gravitational_Object(4000000,4000000,-7700,-2000,998999000000000,"green") #Planet Like
+GravObj8 = Gravitational_Object(-4000000,-4000000,7700,2000,998999000000000,"green") #Planet Like
+GravObj9 = Gravitational_Object(-9000000,-4000000,40000,18500,10000000000,"cyan") #Interstellar Object
+GravObj10 = Gravitational_Object(3000000,-3000000,4000,4000,10000,"red") #Spacecraft
+GravObj11 = Gravitational_Object(4000000,-4000000,1000,10500,999999999980000000,"blue") #Gas Giant
+GravObj12 = Gravitational_Object(-4000000,4000000,1000,-10500,999999999980000000,"blue") #Gas Giant
+#GravObj11 = Gravitational_Object(50000,50000,-1,0,99999999999999999999999999999999,"black") #Blackhole
 ListOfGravitationalObjects.append(GravObj1)
 ListOfGravitationalObjects.append(GravObj2)
 ListOfGravitationalObjects.append(GravObj3)
 ListOfGravitationalObjects.append(GravObj4)
 ListOfGravitationalObjects.append(GravObj5)
+ListOfGravitationalObjects.append(GravObj6)
+ListOfGravitationalObjects.append(GravObj7)
+ListOfGravitationalObjects.append(GravObj8)
+ListOfGravitationalObjects.append(GravObj9)
+ListOfGravitationalObjects.append(GravObj10)
+ListOfGravitationalObjects.append(GravObj11)
+ListOfGravitationalObjects.append(GravObj12)
 
-
+plt.xlim(bounds_of_calculation_left, bounds_of_calculation_right)
+plt.ylim(bounds_of_calculation_left, bounds_of_calculation_right)
+print("Type \'Y\' to initiate the program:")
+firstPass = True
 ListOfCoords2D = setup(ListOfCoords2D, ListOfGravitationalObjects)
 elapsed_milliseconds = 0
 initial_milliseconds = current_milli_time()
 counter = 0
 while(elapsed_milliseconds / 1000 < seconds_of_computation_time):
+    plt.xlim(bounds_of_calculation_left, bounds_of_calculation_right)
+    plt.ylim(bounds_of_calculation_left, bounds_of_calculation_right)
     if(int(elapsed_milliseconds / 1000) % 10 == 0):
         print(str(elapsed_milliseconds/ 10 / seconds_of_computation_time) + "% Done with Simulation" )
     PreviousGravObjs = ListOfGravitationalObjects.copy()
     for objN1 in ListOfGravitationalObjects:
         for objN2 in ListOfGravitationalObjects:
             if(objN1 != objN2):
-                objN1.accelerate_this_by(distance_x = objN2.x_cord,distance_y = objN2.y_cord,mass_two = objN2.mass)
+                if(objN2.distance_from(objN1.x_cord,objN1.y_cord) <= objN1.schwartzchild_radius):
+                    objN1.add_mass(objN2.mass)
+                    ListOfGravitationalObjects.remove(objN2)
+                else:
+                    objN1.accelerate_this_by(distance_x = objN2.x_cord,distance_y = objN2.y_cord,mass_two = objN2.mass)
     animate_and_update(ListOfGravitationalObjects,ListOfCoords2D)
-
+    if(firstPass):
+        while (input() != "Y"):
+            pass
+        initial_milliseconds = current_milli_time() #First tick
+        firstPass = False # No longer the first tick
     elapsed_milliseconds = current_milli_time() - initial_milliseconds
     #print(str(elapsed_milliseconds / 1000) + "of Computer Time Used")
 plt.show()
