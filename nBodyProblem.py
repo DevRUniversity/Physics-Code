@@ -1,10 +1,12 @@
+import random
+
 from matplotlib import pyplot as plt
 import math
 import time
 seconds_of_computation_time = 600 #Ten Minutes
 Gravitational_constant = 0.00000000006674
-bounds_of_calculation_left = -9000000
-bounds_of_calculation_right = 9000000
+bounds_of_calculation_left = -4000000
+bounds_of_calculation_right = 4000000
 speed_of_light = 299792458
 ListOfGravitationalObjects = []
 newX = []
@@ -74,6 +76,9 @@ def calculate_marker_size(mass):
         markersize = 15
     return markersize
 
+def get_random(lR,rR):
+    return random.randrange(lR,rR,1)
+
 def animate_and_update(grav_list,ListOfCoords2D):
     # Mention x and y limits to define their range
     plt.clf()
@@ -101,18 +106,20 @@ def animate_and_update(grav_list,ListOfCoords2D):
     plt.pause(0.01)
 
 #Create and add gravitational objects here
-GravObj1 = Gravitational_Object(1,1,1,-1,2989000000000000000000000,"gold") #Sun in this system
-GravObj2 = Gravitational_Object(0,1000000,-3500,3000,2989000000,"magenta") #Asteroid size
-GravObj3 = Gravitational_Object(0,1500000,-2000,3000,2989000000,"magenta") #Asteroid size
-GravObj4 = Gravitational_Object(1000000,0,5400,6000,2989000000,"magenta") #Asteroid size
-GravObj5 = Gravitational_Object(1500000,0,3000,9000,2989000000,"magenta") #Asteroid size
-GravObj6 = Gravitational_Object(1230000,0,7730,-3705,2989000000,"magenta") #Asteroid size
-GravObj7 = Gravitational_Object(4000000,4000000,-7700,-2000,998999000000000,"green") #Planet Like
-GravObj8 = Gravitational_Object(-4000000,-4000000,7700,2000,998999000000000,"green") #Planet Like
+GravObj1 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,2989000000,"magenta") #Asteroid size
+GravObj2 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,2989000000,"magenta") #Asteroid size
+GravObj3 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,2989000000,"magenta") #Asteroid size
+GravObj4 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,2989000000,"magenta") #Asteroid size
+GravObj5 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,2989000000,"magenta") #Asteroid size
+GravObj6 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,2989000000,"magenta") #Asteroid size
+GravObj7 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,998999000000000,"green") #Planet Like
+GravObj8 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,998999000000000,"green") #Planet Like
 GravObj9 = Gravitational_Object(-9000000,-4000000,40000,18500,10000000000,"cyan") #Interstellar Object
 GravObj10 = Gravitational_Object(3000000,-3000000,4000,4000,10000,"red") #Spacecraft
-GravObj11 = Gravitational_Object(4000000,-4000000,1000,10500,999999999980000000,"blue") #Gas Giant
-GravObj12 = Gravitational_Object(-4000000,4000000,1000,-10500,999999999980000000,"blue") #Gas Giant
+GravObj11 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,999999999980000000,"blue") #Gas Giant
+GravObj12 = Gravitational_Object(get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right),get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,get_random(bounds_of_calculation_left,bounds_of_calculation_right)/1000,999999999980000000,"blue") #Gas Giant
+GravObjSun1 = Gravitational_Object(800000,800000,-7000,0,2989000000000000000000000,"gold") #Sun in this system
+GravObjSun2 = Gravitational_Object(-800000,-800000,7000,0,2989000000000000000000000,"gold") #Sun in this system
 #GravObj11 = Gravitational_Object(50000,50000,-1,0,99999999999999999999999999999999,"black") #Blackhole
 ListOfGravitationalObjects.append(GravObj1)
 ListOfGravitationalObjects.append(GravObj2)
@@ -126,6 +133,34 @@ ListOfGravitationalObjects.append(GravObj9)
 ListOfGravitationalObjects.append(GravObj10)
 ListOfGravitationalObjects.append(GravObj11)
 ListOfGravitationalObjects.append(GravObj12)
+ListOfGravitationalObjects.append(GravObjSun1)
+ListOfGravitationalObjects.append(GravObjSun2)
+
+# GravObj1 = Gravitational_Object(1,1,1,-1,2989000000000000000000000,"gold") #Sun in this system
+# GravObj2 = Gravitational_Object(0,1000000,-3500,3000,2989000000,"magenta") #Asteroid size
+# GravObj3 = Gravitational_Object(0,1500000,-2000,3000,2989000000,"magenta") #Asteroid size
+# GravObj4 = Gravitational_Object(1000000,0,5400,6000,2989000000,"magenta") #Asteroid size
+# GravObj5 = Gravitational_Object(1500000,0,3000,9000,2989000000,"magenta") #Asteroid size
+# GravObj6 = Gravitational_Object(1230000,0,7730,-3705,2989000000,"magenta") #Asteroid size
+# GravObj7 = Gravitational_Object(4000000,4000000,-7700,-2000,998999000000000,"green") #Planet Like
+# GravObj8 = Gravitational_Object(-4000000,-4000000,7700,2000,998999000000000,"green") #Planet Like
+# GravObj9 = Gravitational_Object(-9000000,-4000000,40000,18500,10000000000,"cyan") #Interstellar Object
+# GravObj10 = Gravitational_Object(3000000,-3000000,4000,4000,10000,"red") #Spacecraft
+# GravObj11 = Gravitational_Object(4000000,-4000000,1000,10500,999999999980000000,"blue") #Gas Giant
+# GravObj12 = Gravitational_Object(-4000000,4000000,1000,-10500,999999999980000000,"blue") #Gas Giant
+# #GravObj11 = Gravitational_Object(50000,50000,-1,0,99999999999999999999999999999999,"black") #Blackhole
+# ListOfGravitationalObjects.append(GravObj1)
+# ListOfGravitationalObjects.append(GravObj2)
+# ListOfGravitationalObjects.append(GravObj3)
+# ListOfGravitationalObjects.append(GravObj4)
+# ListOfGravitationalObjects.append(GravObj5)
+# ListOfGravitationalObjects.append(GravObj6)
+# ListOfGravitationalObjects.append(GravObj7)
+# ListOfGravitationalObjects.append(GravObj8)
+# ListOfGravitationalObjects.append(GravObj9)
+# ListOfGravitationalObjects.append(GravObj10)
+# ListOfGravitationalObjects.append(GravObj11)
+# ListOfGravitationalObjects.append(GravObj12)
 
 plt.xlim(bounds_of_calculation_left, bounds_of_calculation_right)
 plt.ylim(bounds_of_calculation_left, bounds_of_calculation_right)
